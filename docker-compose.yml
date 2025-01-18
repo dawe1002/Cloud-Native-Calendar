@@ -1,0 +1,93 @@
+version: '3.8'
+services:
+
+##### IMAGES #####
+
+ calendar-service:
+  build:
+    context: ./calendar-service
+    dockerfile: Dockerfile
+  image: calendar-service:latest
+  container_name: calendar-service
+  ports:
+    - "8082:8080"
+  environment:
+    - SPRING_PROFILES_ACTIVE=prod
+  depends_on:
+    - mysql-db
+  networks:
+    - backend
+
+  user-management:
+    build:
+      context: ./user-management
+      dockerfile: Dockerfile
+    image: user-management:latest
+    container_name: user-management
+    ports:
+      - "8081:8080"
+    environment:
+      - SPRING_PROFILES_ACTIVE=prod
+      - MYSQL_HOST=mysql-db
+      - MYSQL_PORT=3306
+      - MYSQL_USER=root
+      - MYSQL_PASSWORD=rootpassword
+      - MYSQL_DB=user_db
+    depends_on:
+      - mysql-db
+    networks:
+      - backend
+
+  notifications:
+    build:
+      context: ./notifications
+      dockerfile: Dockerfile
+    image: notifications:latest
+    container_name: notifications
+    ports:
+      - "8083:8080"
+    depends_on:
+      - user-management
+      - rabbitmq
+    networks:
+      - backend
+  
+  rabbitmq:
+    image: rabbitmq:3-management
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    image: frontend:latest
+    container_name: frontend
+    ports:
+      - "8080:3000"
+    depends_on:
+      - user-management
+      - calendar-service
+      - notifications
+    networks:
+      - backend
+
+##### DATABASES #####
+
+  mysql-db:
+    image: mysql:8.0
+    container_name: mysql-db
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_DATABASE: user_db
+      MYSQL_USER: root
+      MYSQL_PASSWORD: rootpassword
+    ports:
+      - "3306:3306"
+    networks:
+      - backend
+
+networks:
+  backend:
+    driver: bridge
