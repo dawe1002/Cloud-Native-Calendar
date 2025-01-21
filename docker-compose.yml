@@ -103,7 +103,7 @@ services:
       MYSQL_DATABASE: user_db
       MYSQL_PASSWORD: rootpassword
     ports:
-      - "3307:3307"
+      - "3307:3306"
     networks:
       - backend
     volumes:
