@@ -1,0 +1,1 @@
+Main-Class: com.dawe1002.user.management.UserManagementApplication
