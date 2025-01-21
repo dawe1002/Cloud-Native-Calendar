@@ -1,5 +1,5 @@
-FROM openjdk:17-jdk-slim AS build
-WORKDIR /app
-COPY target/user-service.jar /app/user-service.jar
+FROM openjdk:17-jdk-slim
+ARG JAR_FILE=target/user-management-0.0.1-SNAPSHOT.jar
+COPY ${JAR_FILE} app.jar
 EXPOSE 8081
-ENTRYPOINT ["java", "-jar", "user-service.jar"]
+ENTRYPOINT ["java", "-jar", "/app.jar"]

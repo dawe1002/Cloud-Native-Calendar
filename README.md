@@ -36,3 +36,10 @@ Technologien:
 _________________________________________________________________________________________________________________________________
 
 
+#TODO
+Dokumentation
+
+    README.md Struktur:
+        Features: Liste der Microservices und ihre Funktionalitäten.
+        Setup-Anleitung: Schritte zum lokalen Start.
+        Screenshots: UI und API-Responses.

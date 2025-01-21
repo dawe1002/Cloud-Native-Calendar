@@ -1,12 +1,12 @@
 {
-  "name": "frontend-service",
+  "name": "nodejs-frontend",
   "version": "1.0.0",
-  "description": "Frontend for Cloud Native Calendar",
+  "description": "Node.js basiertes Frontend mit Kalenderansicht",
   "main": "src/app.js",
   "scripts": {
-    "start": "serve -s public"
+    "start": "node src/app.js"
   },
   "dependencies": {
-    "serve": "^14.0.1"
+    "express": "^4.18.2"
   }
 }
