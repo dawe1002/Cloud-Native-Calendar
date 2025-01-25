@@ -1,0 +1,95 @@
+html {
+	max-height: 100%;
+}
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    margin: 0;
+    padding: 0;
+	max-height: 80%;
+	max-width: 100%;
+}
+header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #007bff;
+    color: white;
+    padding: 10px 20px;
+}
+header #logo {
+    font-size: 22px;
+    font-weight: bold;
+	justify-content: center;
+}
+header button {
+    background-color: #28a745;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    cursor: pointer;
+}
+#calendar {
+    display: grid;
+    grid-template-columns: repeat(7, 14%);
+    gap: 10px;
+	max-width: 60%;
+	margin: 20px;
+}
+.day {
+    display: grid;
+    justify-content: center;
+    align-items: center;
+    padding: 15px;
+    background-color: #ffffff;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    cursor: pointer;
+    font-size: 24px;
+    font-weight: bold;
+    transition: transform 0.2s ease, background-color 0.3s ease;
+}
+.day:hover {
+    background-color: #f0f0f0;
+    transform: scale(1.1);
+}
+
+.day.selected {
+    background-color: #4CAF50;
+    color: white;
+    transform: scale(1.1);
+}
+.day.disabled {
+    background-color: #e0e0e0;
+    cursor: not-allowed;
+}
+.day:active {
+    transform: scale(1.05);
+}
+.calendar-container {
+    display: grid;
+    justify-content: center;
+    align-items: center;
+    min-height: 50vh;
+	margin-left: 16vh;
+    box-sizing: border-box;
+}
+.calendar-header {
+    display: inline-block;
+    justify-content: space-between;
+	margin-top: 40px;
+    margin-bottom: 20px;
+	
+}
+.actions {
+    padding: 20px;
+    text-align: center;
+	justify-content: center;
+}
+.actions button {
+    margin: 5px;
+    padding: 10px 20px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    cursor: pointer;
+}
