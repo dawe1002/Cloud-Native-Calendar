@@ -1,7 +1,9 @@
 version: '3.8'
+
+
+##### IMAGES #####
 services:
 
-  ##### IMAGES #####
   calendar-service:
     build:
       context: ./calendar-service
@@ -12,9 +14,11 @@ services:
       - "8082:8080"
     environment:
       - SPRING_PROFILES_ACTIVE=prod
+      - SPRING_DEVTOOLS_RESTART_ENABLED=true
       - SPRING_DATASOURCE_URL=jdbc:mysql://localhost:3306/calendar_db
       - SPRING_DATASOURCE_USERNAME=root
       - SPRING_DATASOURCE_PASSWORD=rootpassword
+
     depends_on:
       - calendar-db
     networks:
@@ -77,6 +81,8 @@ services:
       - backend
     volumes:
       - ./frontend:/app/frontend
+      - .:/app
+      - ./frontend/src/main/webapp
 
   ##### DATABASES #####
   calendar-db:
@@ -111,12 +117,26 @@ services:
       - ./db_scripts:/scripts
     command: ["mysqld", "--init-file=/scripts/migrate_user.sql"]
 
-networks:
-  backend:
-    driver: bridge
+  adminer:
+    image: adminer
+    container_name: adminer
+    restart:  always
+    ports:
+      - "8084:8080"
+    networks:
+      - backend
+    volumes:
+      - calendar-db-data:/var/lib/mysql
+      - user-db-data:/var/lib/mysql
+    depends_on:
+      - user-db
+      - calendar-db
 
 volumes:
   calendar-db-data:
     driver: local
   user-db-data:
     driver: local
+
+networks:
+   backend:

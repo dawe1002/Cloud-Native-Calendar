@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cloud-Native-Kalender</title>
+	<link rel="icon" type="image/x-icon" href="/images/favicon.ico">
+    <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body>
+    <header>
+		<img src="/images/logo.png" style="width: 60px; min-width: 60px;"></img>
+        <div id="loginDialog">
+            <form id="loginForm">
+				<div id="logo">Cloud Native Kalender</div>
+                <input type="text" name="benutzer_id" placeholder="Benutzer-ID" required>
+                <input type="password" name="passwort" placeholder="Passwort" required>
+                <button id="loginButton" type="submit">Anmelden</button>
+				<button id="registerButton" onClick="loadRegisterDialog()">Registrieren</button>
+            </form>
+        </div>
+    </header>
+
+	<div class="calendar-container">
+		<div class="calendar-header">
+			<div><span id="month-year"></span></div>
+			<button id="prev-month-btn">&#8617;</button>
+			<button id="next-month-btn">&#8618;</button>
+	    </div>
+	    <div id="calendar"></div>
+	 </div>
+     <div class="actions">
+     	<button id="addTermin">Termin erstellen</button>
+        <button id="deleteTermin">Termin löschen</button>
+    </div>
+	
+    <script src="/js/calendar.js"></script>
+</body>
+</html>
