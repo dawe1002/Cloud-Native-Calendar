@@ -5,6 +5,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
 	// TODO add termin
+	//addTermin Button
     addTerminBtn.addEventListener('click', () => {
 		const titel = prompt('Titel des Termins:');
 		const beschreibung = prompt('Beschreibung:');
@@ -19,6 +20,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 	
 	// TODO delete termin
+	//deleteTermin Button
     deleteTerminBtn.addEventListener('click', () => {
         const datum = prompt('Datum des zu löschenden Termins (YYYY-MM-DD):');
         fetch('/termine', {
@@ -45,6 +47,7 @@ document.addEventListener('DOMContentLoaded', () => {
 	    loadCalendar();
 	});
 
+	//Funktion loadCalendar()
 	function loadCalendar() {
 	    const month = currentDate.getMonth();
 	    const year = currentDate.getFullYear();
@@ -78,6 +81,82 @@ document.addEventListener('DOMContentLoaded', () => {
 	    const months = ["Januar", "Februar", "März", "April", "Mai", "Juni", "Juli", "August", "September", "Oktober", "November", "Dezember"];
 	    return months[month];
 	}
+	
+	document.getElementById("registerButton").addEventListener("click", loadRegisterDialog);
+
+	//Funktion loadRegisterDialog()
+	function loadRegisterDialog() {
+	    const dialogContainer = document.getElementById("dialog-container");
+
+	    // Add overlay for better UX
+	    const overlay = document.createElement("div");
+	    overlay.className = "dialog-overlay";
+	    overlay.addEventListener("click", () => {
+	        dialogContainer.classList.remove("active");
+	        overlay.remove();
+	    });
+
+	    // Create the dialog HTML
+	    dialogContainer.innerHTML = `
+	        <form id="registerForm">
+	            <h2>Registrierung</h2>
+	            <label for="vorname">Vorname:</label>
+	            <input type="text" id="vorname" name="vorname" required>
+	            <label for="nachname">Nachname:</label>
+	            <input type="text" id="nachname" name="nachname" required>
+	            <label for="email">E-Mail:</label>
+	            <input type="email" id="email" name="email" required>
+	            <label for="password">Passwort:</label>
+	            <input type="password" id="password" name="password" required>
+	            <div id="registerButtonContainer">
+				<button type="submit">Registrieren</button>
+	            <button type="button" id="closeDialog">Abbrechen</button>
+				</div>
+	        </form>
+	    `;
+
+	    // Show the dialog and overlay
+	    document.body.appendChild(overlay);
+	    dialogContainer.classList.add("active");
+
+	    // Close dialog
+	    document.getElementById("closeDialog").addEventListener("click", () => {
+	        dialogContainer.classList.remove("active");
+	        overlay.remove();
+	    });
+
+	    // Handle form submission
+	    document.getElementById("registerForm").addEventListener("submit", async (event) => {
+	        event.preventDefault();
+
+	        const formData = {
+	            vorname: document.getElementById("vorname").value,
+	            nachname: document.getElementById("nachname").value,
+	            email: document.getElementById("email").value,
+	            password: document.getElementById("password").value,
+	        };
+
+	        try {
+	            const response = await fetch('/register', {
+	                method: 'POST',
+	                headers: { 'Content-Type': 'application/json' },
+	                body: JSON.stringify(formData),
+	            });
+
+	            if (response.ok) {
+	                alert('Registrierung erfolgreich!');
+	                dialogContainer.classList.remove("active");
+	                overlay.remove();
+	            } else {
+	                alert('Registrierung fehlgeschlagen.');
+	            }
+	        } catch (error) {
+	            console.error('Fehler bei der Registrierung:', error);
+	            alert('Ein Fehler ist aufgetreten.');
+	        }
+	    });
+	}
+
 //reload Calendar
 loadCalendar();
 
