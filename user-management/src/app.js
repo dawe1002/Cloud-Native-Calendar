@@ -35,30 +35,20 @@ app.post('/login', async (req, res) => {
 });
 
 
-//Erstellen eines neuen Benutzers
+// Registration API
 app.post('/register', async (req, res) => {
-    const { benutzer_id, passwort, email, vorname, nachname } = req.body;
-    
+    const { vorname, nachname, email, password } = req.body;
+    const hashedPassword = await bcrypt.hash(password, 10); // Optional: Passwortverschlüsselung
+    const query = `
+        INSERT INTO users (vorname, nachname, email, password)
+        VALUES (?, ?, ?, ?)
+    `;
     try {
-        if (!benutzer_id || !passwort || !email || !vorname || !nachname) {
-            return res.status(400).send('Alle Felder sind erforderlich.');
-        }
-
-        const hashedPasswort = await hashPassword(passwort);
-
-        const newUser = {
-            benutzer_id,
-            passwort: hashedPasswort, // Speichern des verschlüsselten Passworts
-            email,
-            vorname,
-            nachname,
-        };
-
-        const result = await db.collection('users').insertOne(newUser);
-
-        res.status(201).send({ message: 'Benutzer erfolgreich registriert' });
+        await db.execute(query, [vorname, nachname, email, hashedPassword]);
+        res.status(201).send('Registrierung erfolgreich');
     } catch (error) {
-        console.error(error);
-        res.status(500).send('Fehler bei der Registrierung');
+        console.error('Registrierungsfehler:', error);
+        res.status(500).send('Registrierung fehlgeschlagen');
     }
 });
+
