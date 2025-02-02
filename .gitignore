@@ -26,6 +26,8 @@ release.properties
 bin/
 tmp/
 *.log
+.classpath
+.factorypath
 
 # Node.js (falls JavaScript verwendet wird)
 node_modules/

@@ -1,60 +1,33 @@
-# IDE-specific files
-.metadata/
-.settings/
-.project/
 HELP.md
-
-# Java
-*.class
-*.jar
-*.war
-*.ear
-*.iml
-
-# Maven
 target/
 !.mvn/wrapper/maven-wrapper.jar
-.mvn/
-pom.xml.tag
-pom.xml.releaseBackup
-pom.xml.versionsBackup
-pom.xml.next
-release.properties
+!**/src/main/**/target/
+!**/src/test/**/target/
 
-# Eclipse/STS
-.settings/
-bin/
-tmp/
-*.log
+### STS ###
+.apt_generated
+.classpath
+.factorypath
+.project
+.settings
+.springBeans
+.sts4-cache
 
-# Node.js (falls JavaScript verwendet wird)
-node_modules/
+### IntelliJ IDEA ###
+.idea
+*.iws
+*.iml
+*.ipr
 
-# Docker
-*.log
-*.pid
-*.pid.lock
-*.swp
-docker-compose.override.yml
-
-# Logs
-*.log
-logs/
-spring.log
-
-# Other
-*.env
-.env.local
-.env.development
-.env.test
-.env.production
-
-# Test coverage
-coverage/
-*.lcov
-
-# Build and dependency directories
-dist/
+### NetBeans ###
+/nbproject/private/
+/nbbuild/
+/dist/
+/nbdist/
+/.nb-gradle/
 build/
+!**/src/main/**/build/
+!**/src/test/**/build/
 
-/.metadata/
+### VS Code ###
+.vscode/
