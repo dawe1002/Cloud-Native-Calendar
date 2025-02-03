@@ -1,8 +1,8 @@
 const express = require('express');
 const path = require('path');
 const axios = require('axios');
-
 const app = express();
+
 
 // Middleware
 app.use(express.json());
@@ -20,34 +20,69 @@ app.get('/', (req, res) => {
 
 // Login API
 app.post('/login', async (req, res) => {
-    const { benutzer_id, passwort } = req.body;
+    const { email, passwort } = req.body;
+
     try {
-        const response = await axios.post('http://user-management:8081/login', {
-            benutzer_id,
-            passwort,
+        const response = await axios.post('http://user-management:8080/api/users/login', {
+            email: email,
+            password: passwort,  // Falls dein Service `password` erwartet, stelle sicher, dass du das richtige Format sendest.
+        }, {
+            headers: { 'Content-Type': 'application/json' },
         });
-        res.status(200).send(response.data);
+
+        // Prüfen, ob die Antwort vom Login-Service erfolgreich ist
+        if (response.status === 200) {  
+			console.log(response.data);
+            res.status(200).json({ 
+                message: 'Login erfolgreich!', 
+                data: response.data, 
+            });
+        } else {
+            console.log('Login-Service Antwort:', response.data); // TODO Debug entfernen
+            res.status(response.status).json({ 
+                message: response.data.message || 'Fehlerhafte Antwort vom Login-Service.' 
+            });
+        }
     } catch (error) {
-        res.status(400).send('Login fehlgeschlagen');
+        console.error('Fehler vom Login-Service:', error.message);
+        if (error.response) {
+            console.log('Fehler-Antwort:', error.response.data);
+            res.status(error.response.status || 400).json({
+                message: error.response.data.message || 'Login fehlgeschlagen!',
+            });
+        } else {
+            console.error('Fehlerdetails:', error);
+            res.status(500).json({ message: 'Interner Fehler: Login-Service nicht erreichbar!' });
+        }
     }
 });
 
+
 // Registrierung API
 app.post('/register', async (req, res) => {
-    const {vorname, nachname, passwort, email} = req.body;
-    try {
-        const response = await axios.post('http://user-management:8081/register', {
-            vorname,
-			nachname,
-            passwort,
-            email
-        });
+    const { vorname, nachname, email, password } = req.body;
+	
+	try {
+	    const response = await axios.post('http://user-management:8080/api/users/register', {
+	        vorname,
+	        nachname,
+	        email,
+	        password
+	    }, {
+	        headers: {
+	            'Content-Type': 'application/json',
+	        },
+	    });
         // Erfolgreiche Registrierung
         res.status(201).send(response.data);
     } catch (error) {
-        // Fehlerbehandlung
-        console.error(error);
-        res.status(400).send('Registrierung fehlgeschlagen');
+		if (error.response.status === 409) {
+			res.status(409).send('Nutzername bereits vergeben.');
+		} else {
+			// Fehlerbehandlung
+			console.error(error);
+			res.status(500).send('Registrierung fehlgeschlagen');
+		}
     }
 });
 
@@ -58,8 +93,8 @@ app.post('/termine', async (req, res) => {
         const { action, titel, beschreibung, termin_datetime } = req.body;
         const endpoint =
             action === 'add'
-                ? 'http://calendar-db:8082/termine/add'
-                : 'http://calendar-db:8082/termine/delete';
+                ? 'http://calendar-service:8080/termine/add'
+                : 'http://calendar-service:8080/termine/delete';
         await axios.post(endpoint, { titel, beschreibung, termin_datetime });
         res.status(200).send('Aktion erfolgreich');
     } catch (error) {
@@ -68,5 +103,5 @@ app.post('/termine', async (req, res) => {
 });
 
 // Server Start
-const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => console.log(`Server läuft auf http://localhost:${PORT}`));
+const PORT = 3000;
+app.listen(PORT, () => console.log(`Server läuft auf `+ PORT));

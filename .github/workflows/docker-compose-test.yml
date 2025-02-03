@@ -1,0 +1,45 @@
+name: Docker Compose Test
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+
+    steps:
+      # 1 Repository auschecken
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+
+      # 2️ Setzt Docker Compose auf (Docker ist in GitHub Actions bereits vorhanden)
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+
+      # 3️ Baue alle Services mit Docker Compose
+      - name: Build Services
+        run: docker-compose build
+
+      # 4️ Starte alle Container im Hintergrund
+      - name: Start Containers
+        run: docker-compose up -d
+
+      # 5️ Warte kurz, um den Services Zeit zum Hochfahren zu geben
+      - name: Wait for services to start
+        run: sleep 10
+
+      # 6️ Überprüfe, ob alle Container laufen
+      - name: Check running containers
+        run: docker ps
+
+      # 7️ Führe Tests aus (hier kannst du deine individuellen Tests einfügen)
+      #TODO beliebige Test-Commands einfügen :)
+
+      # 8️ Stoppe und entferne alle Container nach dem Test
+      - name: Stop and remove containers
+        run: docker-compose down

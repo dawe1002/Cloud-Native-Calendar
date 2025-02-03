@@ -9,14 +9,14 @@
 </head>
 <body>
     <header>
-		<img src="/images/logo.png" style="width: 60px; min-width: 60px;"></img>
+		<img src="/images/logo.png" style="width: 60px; min-width: 60px;">
         <div id="loginDialog">
-            <form id="loginForm">
+            <form id="loginForm" method="post">
 				<div id="logo">Cloud Native Kalender</div>
-                <input type="text" name="benutzer_id" placeholder="Benutzer-ID" required>
-                <input type="password" name="passwort" placeholder="Passwort" required>
-                <button id="loginButton" type="submit">Anmelden</button>
-				<button id="registerButton">Registrieren</button>
+                <input id="email" type="text" name="email" placeholder="E-Mail" required>
+                <input id="passwort" type="password" name="passwort" placeholder="Passwort" required>
+                <button id="loginButton" type="button">Anmelden</button>
+				<span><button id="registerButton" type="button">Registrieren</button></span>
             </form>
 			<div id="dialog-container"></div>
         </div>

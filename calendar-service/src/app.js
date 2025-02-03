@@ -3,19 +3,20 @@ const axios = require('axios');
 const bodyParser = require('body-parser');
 const mysql = require('mysql2');
 const app = express();
-const PORT = 8082;
+
 
 // Middleware
-app.use(bodyParser.json());
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+app.use(express.static(path.join(__dirname, 'main/webapp')));
 
 // MySQL-Verbindung
 const db = mysql.createConnection({
-    host: 'calendar-db', // Der Hostname des MySQL-Containers
+    host: 'calendar-db',
     user: 'root',
-    password: 'password', // Dein MySQL-Passwort hier
-    database: 'calendar',
+    password: 'rootpassword',
+    database: 'calendar_db',
 });
-
 db.connect((err) => {
     if (err) {
         console.error('Fehler bei der Verbindung zur MySQL-Datenbank:', err.stack);
@@ -31,7 +32,6 @@ app.post('/termine/add', (req, res) => {
     if (!titel || !beschreibung || !termin_datetime) {
         return res.status(400).send('Titel, Beschreibung und Datum sind erforderlich.');
     }
-
     const query = 'INSERT INTO termine (titel, beschreibung, termin_datetime) VALUES (?, ?, ?)';
     db.query(query, [titel, beschreibung, termin_datetime], (err, result) => {
         if (err) {
@@ -44,14 +44,14 @@ app.post('/termine/add', (req, res) => {
 
 // Endpunkt zum Löschen eines Termins
 app.post('/termine/delete', (req, res) => {
-    const { datum } = req.body;
+    const { titel, beschreibung, termin_datetime } = req.body;
 
-    if (!datum) {
-        return res.status(400).send('Datum ist erforderlich.');
-    }
+	if (!termin_datetime) {
+		return res.status(400).send('Datum ist erforderlich.');
+	}
 
-    const query = 'DELETE FROM termine WHERE datum = ?';
-    db.query(query, [datum], (err, result) => {
+    const query = 'DELETE FROM termine WHERE termin_datetime = ?';
+    db.query(query, [termin_datetime], (err, result) => {
         if (err) {
             console.error('Fehler beim Löschen des Termins:', err);
             return res.status(500).send('Fehler beim Löschen des Termins');
@@ -64,6 +64,7 @@ app.post('/termine/delete', (req, res) => {
 });
 
 // Server starten
+const PORT = 8080;
 app.listen(PORT, () => {
-    console.log(`Calendar Service läuft auf http://localhost:${PORT}`);
+    console.log(`Calendar Service läuft auf `+ PORT);
 });

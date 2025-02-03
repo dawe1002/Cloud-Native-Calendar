@@ -129,7 +129,6 @@ header button {
 	margin-bottom: 10%;
 }
 #registerButtonContainer {
-	display: -moz-inline-grid;
 	margin-top: 30px;
 	padding: 10px;
 }
