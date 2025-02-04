@@ -10,4 +10,3 @@ COPY src ./src
 ENV DATABASE_URL=jdbc:mysql://calendar-db:3306/calendar_db
 EXPOSE 8082
 ENTRYPOINT ["java", "-Dspring.devtools.restart.enabled=true", "-jar", "app.jar"]
-CMD ["sh", "-c", "java -jar /app/calendar-service-0.0.1-SNAPSHOT.jar"]

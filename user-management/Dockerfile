@@ -10,4 +10,3 @@ COPY src ./src
 ENV DATABASE_URL=jdbc:mysql://user-db:3306/user_db
 EXPOSE 8081
 ENTRYPOINT ["java", "-Dspring.devtools.restart.enabled=true", "-jar", "app.jar"]
-#CMD ["sh", "-c", "java -jar /app/user-management-0.0.1-SNAPSHOT.jar"]

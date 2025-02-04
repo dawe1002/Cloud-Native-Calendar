@@ -1,6 +1,10 @@
 _________________________________________________________________________________________________________________________________
 
 # Cloud-Native-Calendar
+
+REMOTE REPOSITORY: 
+https://github.com/dawe1002/Cloud-Native-Calendar
+
 Es handelt sich um einen "Cloud Native Kalender mit Benachrichtigungen".
 Die Anwendung gibt Benutzern die Möglichkeit Termine in einen Kalender einzutragen.
 Außerdem erhalten User bei Änderungen am Terminplan und beim Erreichen von Deadlines eine Benachrichtigung.
@@ -36,10 +40,68 @@ Technologien:
 _________________________________________________________________________________________________________________________________
 
 
-#TODO
-Dokumentation
+#Dokumentation
 
-    README.md Struktur:
-        Features: Liste der Microservices und ihre Funktionalitäten.
-        Setup-Anleitung: Schritte zum lokalen Start.
-        Screenshots: UI und API-Responses.
+	Orchestrierungsebene:
+	Die Anwendung "Cloud-Native-Calendar" ist ein Multi-POM Projekt und dient als Orchestrierungsebene.(docker-compose.yml/pom.xml)
+	
+	Microservices:
+	Wenn man im Hauptverzeichnis docker compose ausführt, werden die einzelnen Microservices(Unterordner) in sereraten 
+	Containern gebaut und ein gemeinsames Netzwerk wird erstellt.
+	
+	Alle Microservices sind eigenständige Maven Projekte, 
+	die mithilfe von Apache Webservern über HTTP im JSON-Format kommunizieren.
+	
+	Die einzelnen Projekte wurden mit dem Spring Initializr initialisiert und benutzen weitestgehend Spring Dependencies.
+
+	Der Microservice "Frontend" kommuniziert über einen node.js-Server mit den anderen Microservices.
+	
+
+Datenbanken: 
+	-Calendar Service: ->	calendar_db
+	MySql-Datenbank mit Termindaten des Kalenders
+	
+	-User Management:	->	user_db
+	MySql-Datenbank mit sensiblen Nutzerdaten
+
+	-adminer:
+	Zum debuggen und gegenprüfen der Datenbanken, läuft auf Port : http://localhost:8084
+
+#Setup-Anleitung: 
+
+Schritte zum lokalen Start:
+
+	Öffne ein Terminal im Hauptverzeichnis des Projekts 
+	(Ich benutze GitBash)
+
+	Erster Start(oder nach Änderungen in der docker-compose.yml):
+
+	mvn clean package
+	docker-compose up -d
+
+	Nachfolgende Starts:
+	
+	docker-compose start
+
+	Server herunterfahren und Docker Containers, Volumes und Images zurücksetzen: 
+	
+	docker-compose down --volumes --rmi all
+
+	DAS PROJEKT UND ALLE MICROSERVICES WURDEN MIT DEN FOLGENDEN PORTS GEBAUT:
+	frontend				->	https://localhost:3000
+	calendar-service			->	https://calendar-service:8082
+	calendar_db				->	https://calendar_db:3306
+	user-management				->	https://user-management:8081
+	user_db					->	https://user_db_:3306
+	notifications(rabbitmq)			->	https://notifications:8083
+	adminer(debug/dev)			->	https://localhost:8084
+
+	DIE BENUTZEROBERFLÄCHE LÄUFT AUF DEM PORT: 
+	https://localhost:3000
+	VIEL SPAß!
+
+	OPTIONAL (Projekt mit Hot Reload bauen):
+		mvn spring-boot:run -pl calendar-service
+		mvn spring-boot:run -pl user-management
+		mvn spring-boot:run -pl notifications
+		mvn spring-boot:run -pl frontend

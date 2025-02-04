@@ -31,7 +31,7 @@ jobs:
 
       # 5️ Warte kurz, um den Services Zeit zum Hochfahren zu geben
       - name: Wait for services to start
-        run: sleep 10
+        run: sleep 120 #2 Minuten, da docker-compose build lange dauert
 
       # 6️ Überprüfe, ob alle Container laufen
       - name: Check running containers
