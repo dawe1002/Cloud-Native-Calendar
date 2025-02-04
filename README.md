@@ -98,6 +98,25 @@ Schritte zum lokalen Start:
 
 	DIE BENUTZEROBERFLÄCHE LÄUFT AUF DEM PORT: 
 	https://localhost:3000
+	Anmeldedaten-Frontend(Beispiel):
+	E-Mail: "weyerdavid@gmail.com" Passwort: "password"
+
+	adminer zum testen der DB:
+	http://localhost:8084
+	
+	Anmeldedaten (user_db):
+		Server: user-db
+		Username user
+		Password: rootpassword
+		Database: user_db
+	
+	Anmeldedaten (calendar_db):
+		Server: calendar-db
+		Username user
+		Password: rootpassword
+		Database: calendar_db
+
+
 	VIEL SPAß!
 
 	OPTIONAL (Projekt mit Hot Reload bauen):
