@@ -1,31 +1,103 @@
 
 document.addEventListener('DOMContentLoaded', () => {
-    // addTermin Button
+    
+	
+	// addTermin Button
     const addTerminBtn = document.getElementById('addTermin');
     addTerminBtn.addEventListener('click', () => {
         const titel = prompt('Titel des Termins:');
         const beschreibung = prompt('Beschreibung:');
         const termin_datetime = prompt('Datum für den Termin -> Format: (2025-01-31 14:30:00)');
 
-        fetch('/termine', {
+        fetch('/add', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ action: 'add', titel, beschreibung, termin_datetime }),
+            body: JSON.stringify({ titel, beschreibung, termin_datetime }),
         }).then((res) => res.text()).then(alert);
         loadCalendar();
     });
 
     // deleteTermin Button
-    const deleteTerminBtn = document.getElementById('deleteTermin');
-    deleteTerminBtn.addEventListener('click', () => {
-        const datum = prompt('Datum für den Termin -> Format: (2025-01-31 14:30:00)');
-        fetch('/termine', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ action: 'delete', datum }),
-        }).then((res) => res.text()).then(alert);
-        loadCalendar();
-    });
+	const deleteTerminBtn = document.getElementById('deleteTermin');
+	deleteTerminBtn.addEventListener('click', async () => {
+	    const id = prompt('ID des zu löschenden Termins (int): ');
+	    
+	    try {
+	        const res = await fetch('/delete', {
+	            method: 'POST',
+	            headers: { 'Content-Type': 'application/json' },
+	            body: JSON.stringify({ termin_id: id }),
+	        });
+
+	        const result = await res.json();
+	        if (!res.ok) {
+	            alert(`Fehler: ${result.error}`);
+	        } else {
+	            alert(result.message);
+	        }
+	    } catch (err) {
+	        console.error("Fehler beim Löschen:", err);
+	        alert("Unerwarteter Fehler!");
+	    }
+
+	    loadCalendar();
+	});
+
+
+	
+	//showAllTermine Button
+	const showAllTerminBtn = document.getElementById('showAllTermin');
+	showAllTerminBtn.addEventListener('click', () => {
+		
+	    fetch('/all', {
+	        method: 'POST',
+	        headers: { 'Content-Type': 'application/json' },
+	        body: JSON.stringify({}),
+	    }).then(res => res.json())
+		  .then(data => displayTermine(data))
+		  .catch(error => {
+		  	console.error("Fehler beim Laden der Termine:", error);
+		        });
+	    loadCalendar();
+	});
+	
+	//displayTermine Funktion        
+	function displayTermine(data) {
+		const dialog_container2 = document.getElementById('dialog-container2');
+	    const overlay = document.createElement("div");
+	    overlay.className = "dialog-overlay2";
+	    overlay.addEventListener("click", () => {
+	        dialog_container2.classList.remove("active");
+	        overlay.remove();
+	    });
+
+	    if (!Array.isArray(data) || data.length === 0) {
+	        dialog_container2.innerHTML = "<p>Keine Termine gefunden.</p>";
+	        return;
+	    }
+
+	    let table = "<table border='1' cellspacing='0' cellpadding='5'>";
+	    table += "<tr><th>ID</th><th>Benutzer ID</th><th>Titel</th><th>Beschreibung</th><th>Datum & Zeit</th></tr>";
+
+	    data.forEach(t => {
+	        table += `
+	            <tr>
+	                <td>${t.termin_id ?? "—"}</td>
+	                <td>${t.benutzer_id ?? "—"}</td>
+	                <td>${t.titel ?? "—"}</td>
+	                <td>${t.beschreibung ?? "—"}</td>
+	                <td>${t.termin_datetime ?? "—"}</td>
+	            </tr>`;
+	    });
+
+	    table += "</table>";
+		// Show the dialog and overlay
+	    dialog_container2.innerHTML = table;
+		document.body.appendChild(overlay);
+		dialog_container2.classList.add("active");
+
+	}
+	
 	
 	// Funktionen für die Kalenderansicht
 	const monthYearElem = document.getElementById("month-year");
@@ -215,6 +287,7 @@ document.addEventListener('DOMContentLoaded', () => {
             '<button id="registerButton" type="button">Registrieren</button>' +
             '</form>' +
             '<div id="dialog-container"></div>' +
+			'<div id="dialog-container2"></div>'
             '</div>';
 		location.reload();
     }
