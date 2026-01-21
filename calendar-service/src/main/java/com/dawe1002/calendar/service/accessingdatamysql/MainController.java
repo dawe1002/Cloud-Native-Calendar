@@ -28,12 +28,14 @@ public class MainController {
 	  String titel = body.get("titel").toString();
 	  String beschreibung = body.get("beschreibung").toString();
 	  String termin_datetime = body.get("termin_datetime").toString();
+      Boolean is_notified = false;
     // @RequestParam means it is a parameter from the GET or POST request
 
     Termin n = new Termin();
     n.setTitel(titel);
     n.setBeschreibung(beschreibung);
     n.setTermin_datetime(termin_datetime);
+    n.setIs_notified(is_notified);
     try {
     	terminRepository.save(n);
     	return ResponseEntity.ok("Termin erfolgreich angelegt!");

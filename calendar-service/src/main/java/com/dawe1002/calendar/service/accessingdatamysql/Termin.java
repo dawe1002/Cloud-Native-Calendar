@@ -16,6 +16,7 @@ public class Termin {
   private String titel;
   private String beschreibung;
   private String termin_datetime;
+  private Boolean is_notified;
 
   
   // Getter & Setter
@@ -59,10 +60,18 @@ public class Termin {
       this.termin_datetime = termin_datetime;
   }
 
+public Boolean getIs_notified() {
+      return is_notified;
+  }
+    
+  public void setIs_notified(Boolean is_notified) {
+        this.is_notified = is_notified;
+    }
+
   @Override
   public String toString() {
       return String.format(
-          "Termin[termin_id=%d, benutzer_id=&d titel='%s', beschreibung='%s', termin_datetime='%s']",
-          termin_id, benutzer_id, titel, beschreibung, termin_datetime);
+          "Termin[termin_id=%d, benutzer_id=&d titel='%s', beschreibung='%s', termin_datetime='%s', is_notified='%s']",
+          termin_id, benutzer_id, titel, beschreibung, termin_datetime, is_notified);
   }
 }

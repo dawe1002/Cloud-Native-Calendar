@@ -33,7 +33,7 @@ public class MainController {
     		  .filter(user -> password.equals(user.getPasswort()))
     		  .isPresent();
       if (success) {
-          // TODO check password, respond with token
+          // TODO check password, respond with token (if you implement token, you also need to modify db_schema in db:scripts/migrate_user.sql)
           return ResponseEntity.ok("Login erfolgreich!");
       } else {
           return ResponseEntity
