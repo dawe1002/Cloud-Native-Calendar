@@ -1,4 +1,4 @@
-package com.dawe1002.user_management.accessingdatamysql;
+package com.dawe1002.user_management.service.accessingdatamysql;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

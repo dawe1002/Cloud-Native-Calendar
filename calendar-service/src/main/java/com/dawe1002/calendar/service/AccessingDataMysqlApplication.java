@@ -1,4 +1,4 @@
-package com.dawe1002.calendar.service.accessingdatamysql;
+package com.dawe1002.calendar.service;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

@@ -1,48 +1,73 @@
 
+let jwtToken = null;
+
 document.addEventListener('DOMContentLoaded', () => {
     
 	
 	// addTermin Button
-    const addTerminBtn = document.getElementById('addTermin');
-    addTerminBtn.addEventListener('click', () => {
-        const titel = prompt('Titel des Termins:');
-        const beschreibung = prompt('Beschreibung:');
-        const termin_datetime = prompt('Datum für den Termin -> Format: (2025-01-31 14:30:00)');
+	const addTerminBtn = document.getElementById('addTermin');
+	addTerminBtn.addEventListener('click', async () => {
+		const titel = prompt('Titel des Termins:');
+		const beschreibung = prompt('Beschreibung:');
+		const termin_datetime = prompt('Datum: (Format -> 2026-01-31T14:30:00)');
 
-        fetch('/add', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ titel, beschreibung, termin_datetime }),
-        }).then((res) => res.text()).then(alert);
-        loadCalendar();
-    });
+		if (!jwtToken) {
+			alert('Nicht eingeloggt!');
+			return;
+		}
+
+		const response = await fetch('/add', {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json',
+				'Authorization': `Bearer ${jwtToken}`
+			},
+			body: JSON.stringify({ titel, beschreibung, termin_datetime })
+		});
+
+		const text = await response.text();
+		alert(text);
+
+		loadCalendar();
+	});
+
 
     // deleteTermin Button
 	const deleteTerminBtn = document.getElementById('deleteTermin');
+
 	deleteTerminBtn.addEventListener('click', async () => {
-	    const id = prompt('ID des zu löschenden Termins (int): ');
-	    
-	    try {
-	        const res = await fetch('/delete', {
-	            method: 'POST',
-	            headers: { 'Content-Type': 'application/json' },
-	            body: JSON.stringify({ termin_id: id }),
-	        });
+		const id = prompt('ID des zu löschenden Termins (int):');
+		if (!id) return;
 
-	        const result = await res.json();
-	        if (!res.ok) {
-	            alert(`Fehler: ${result.error}`);
-	        } else {
-	            alert(result.message);
-	        }
-	    } catch (err) {
-	        console.error("Fehler beim Löschen:", err);
-	        alert("Unerwarteter Fehler!");
-	    }
+		if (!jwtToken) {
+			alert('Nicht eingeloggt!');
+			return;
+		}
 
-	    loadCalendar();
+		try {
+			const res = await fetch('/delete', {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json',
+					'Authorization': `Bearer ${jwtToken}`
+				},
+				body: JSON.stringify({ termin_id: Number(id) }),
+			});
+
+			const result = await res.json();
+
+			if (!res.ok) {
+				alert(`Fehler: ${result.error}`);
+			} else {
+				alert(result.message);
+				loadCalendar();
+			}
+
+		} catch (err) {
+			console.error("Fehler beim Löschen:", err);
+			alert("Unerwarteter Fehler!");
+		}
 	});
-
 
 	
 	//showAllTermine Button
@@ -226,44 +251,41 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // Funktionen für Login/Logout View
-    document.getElementById('loginButton').addEventListener('click', async () => {
-        const email = document.getElementById('email').value;
-        const passwort = document.getElementById('passwort').value;
+	document.getElementById('loginButton').addEventListener('click', async () => {
+		const email = document.getElementById('email').value;
+		const passwort = document.getElementById('passwort').value;
 
 		try {
-		    const response = await fetch('/login', {
-		        method: 'POST',
-		        headers: {
-					'Content-Type': 'application/json',
-					'Accept': 'application/json'
+			const response = await fetch('/login', {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json'
 				},
-		        body: JSON.stringify({ email, passwort }),
-		    });
+				body: JSON.stringify({ email, passwort })
+			});
 
-		    const contentType = response.headers.get('Content-Type') || '';
+			if (!response.ok) {
+				const err = await response.json();
+				alert(err.message || 'Login fehlgeschlagen');
+				return;
+			}
 
-		    if (response.status === 200) {
-		        if (response.ok) {
-					alert("Login erfolgreich!")
-		            login(); // Aufrufen der Login-Logik
-		        } else {
-		            alert('Fehler: Unerwartetes Antwortformat.');
-		        }
-		    } else {
-		        let errorMessage = 'Ein Fehler ist aufgetreten.';
-		        
-		        if (contentType.includes('application/json')) {
-		            const error = await response.json();
-		            errorMessage = error.message || errorMessage;
-		        }
+			const data = await response.json();
+			jwtToken = data.token;
+			localStorage.setItem('jwt', jwtToken);
 
-		        alert(errorMessage);
-		    }
+
+			console.log('JWT im Browser gespeichert:', jwtToken);
+
+			alert('Login erfolgreich!');
+			login();
+
 		} catch (error) {
-		    console.error('Fehler beim Login:', error);
-		    alert('Ein Fehler ist aufgetreten: ' + error.message);
+			console.error('Fehler beim Login:', error);
+			alert('Login fehlgeschlagen');
 		}
 	});
+
 
 
     function login() {
@@ -271,11 +293,30 @@ document.addEventListener('DOMContentLoaded', () => {
         loadCalendar();
     }
 
-	function logout() {
-	    localStorage.clear(); // local Storage und Tokens zurücksetzen
-	    loadLoginView();
-	    loadCalendar();
-	};
+	async function logout() {
+		if (!jwtToken) {
+			alert('Nicht eingeloggt');
+			return;
+		}
+
+		try {
+			await fetch('/logout', {
+				method: 'POST',
+				headers: {
+					'Authorization': `Bearer ${jwtToken}`
+				}
+			});
+
+		} catch (e) {
+			console.error('Logout Fehler:', e);
+		}
+
+		jwtToken = null;
+		localStorage.clear();
+		loadLoginView();
+		loadCalendar();
+	}
+
 
     function loadLoginView() {
         document.getElementById('loginDialog').innerHTML =
@@ -287,7 +328,7 @@ document.addEventListener('DOMContentLoaded', () => {
             '<button id="registerButton" type="button">Registrieren</button>' +
             '</form>' +
             '<div id="dialog-container"></div>' +
-			'<div id="dialog-container2"></div>'
+			'<div id="dialog-container2"></div>' +
             '</div>';
 		location.reload();
     }
@@ -296,6 +337,7 @@ document.addEventListener('DOMContentLoaded', () => {
 	    document.getElementById('loginDialog').innerHTML = 
 			'<form id="loginForm">' +
 	        '<div id="loginForm"><p class="welcomeText">Login erfolgreich, Willkommen! <button id="logoutButton">Abmelden</button></p></div>'+
+			'<div id="dialog-container2"></div>' +
 			'</div>';
 			
 	    document.getElementById('logoutButton').addEventListener('click', logout);

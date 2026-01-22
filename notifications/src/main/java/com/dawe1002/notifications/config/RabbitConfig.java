@@ -1,8 +1,6 @@
-package com.dawe1002.notifications.service.config;
+package com.dawe1002.notifications.config;
 
 import org.springframework.amqp.core.*;
-import org.springframework.amqp.support.converter.MessageConverter;
-import org.springframework.amqp.support.converter.Jackson2JsonMessageConverter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -30,10 +28,4 @@ public class RabbitConfig {
                 .to(calendarExchange)
                 .with(ROUTING_KEY);
     }
-
-    @Bean
-        public MessageConverter jacksonMessageConverter() {
-            return new Jackson2JsonMessageConverter();
-        }
-
 }

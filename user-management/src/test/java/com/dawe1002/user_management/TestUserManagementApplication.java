@@ -1,7 +1,7 @@
 package com.dawe1002.user_management;
 
 import org.springframework.boot.SpringApplication;
-import com.dawe1002.user_management.accessingdatamysql.AccessingDataMysqlApplication;
+import com.dawe1002.user_management.service.AccessingDataMysqlApplication;
 import com.dawe1002.user_management.TestcontainersConfiguration;
 
 public class TestUserManagementApplication {

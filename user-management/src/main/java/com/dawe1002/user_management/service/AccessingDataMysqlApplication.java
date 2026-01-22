@@ -1,4 +1,4 @@
-package com.dawe1002.user_management.accessingdatamysql;
+package com.dawe1002.user_management.service;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

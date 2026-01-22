@@ -10,8 +10,10 @@ import org.springframework.context.annotation.Configuration;
 public class RabbitConfig {
 
     public static final String EXCHANGE_NAME = "calendar.exchange";
+    public static final String ROUTING_KEY_APPOINTMENT_CREATED = "appointment.created";
     public static final String QUEUE_NAME = "notifications.queue";
     public static final String ROUTING_KEY = "appointment.*";
+    
 
     @Bean
     public TopicExchange calendarExchange() {

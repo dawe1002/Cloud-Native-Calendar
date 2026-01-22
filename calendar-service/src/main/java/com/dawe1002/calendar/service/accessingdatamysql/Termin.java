@@ -1,5 +1,7 @@
 package com.dawe1002.calendar.service.accessingdatamysql;
 
+import java.time.LocalDateTime;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -15,7 +17,7 @@ public class Termin {
   private Integer benutzer_id;
   private String titel;
   private String beschreibung;
-  private String termin_datetime;
+  private LocalDateTime termin_datetime;
   private Boolean is_notified;
 
   
@@ -52,11 +54,11 @@ public class Termin {
       this.beschreibung = beschreibung;
   }
 
-  public String getTermin_datetime() {
+  public LocalDateTime getTermin_datetime() {
       return termin_datetime;
   }
 
-  public void setTermin_datetime(String termin_datetime) {
+  public void setTermin_datetime(LocalDateTime termin_datetime) {
       this.termin_datetime = termin_datetime;
   }
 

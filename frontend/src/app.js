@@ -2,6 +2,10 @@ const express = require('express');
 const path = require('path');
 const axios = require('axios');
 const app = express();
+let jwtToken = null;
+const axiosInstance = axios.create({
+    timeout: 5000 // 5 Sekunden warten auf calendar-service
+});
 
 
 // Middleware
@@ -23,30 +27,49 @@ app.post('/login', async (req, res) => {
     const { email, passwort } = req.body;
 
     try {
-        const response = await axios.post('http://user-management:8080/api/users/login', {
-            email: email,
-            password: passwort,  // Falls dein Service `password` erwartet, stelle sicher, dass du das richtige Format sendest.
-        }, {
-            headers: { 'Content-Type': 'application/json' },
+        const response = await axios.post(
+            'http://user-management:8080/api/users/login',
+            {
+                email,
+                password: passwort
+            },
+            { headers: { 'Content-Type': 'application/json' } }
+        );
+
+        // Token an Browser zurückgeben
+        res.status(200).json({
+            token: response.data.token
         });
 
-        // Prüfen, ob die Antwort vom Login-Service erfolgreich ist
-        if (response.status === 200) {  
-			console.log(response.data);
-            res.status(200).json({ 
-                message: 'Login erfolgreich!', 
-                data: response.data, 
-            });
-        } else {
-            console.log('Login-Service Antwort:', response.data); // TODO Debug entfernen
-            res.status(response.status).json({ 
-                message: response.data.message || 'Fehlerhafte Antwort vom Login-Service.' 
-            });
-        }
     } catch (error) {
-        console.error('Fehler vom Login-Service:', error.message);      
-		}
-	});
+        res.status(401).json({ message: 'Login fehlgeschlagen' });
+    }
+});
+
+app.post('/logout', async (req, res) => {
+    const authHeader = req.headers.authorization;
+
+    if (!authHeader) {
+        return res.status(401).send('Nicht eingeloggt');
+    }
+
+    try {
+        await axios.post(
+            'http://user-management:8080/api/users/logout',
+            {},
+            {
+                headers: {
+                    Authorization: authHeader
+                }
+            }
+        );
+
+        res.status(200).send('Logout erfolgreich');
+    } catch (err) {
+        console.error('Logout-Fehler:', err.message);
+        res.status(500).send('Logout fehlgeschlagen');
+    }
+});
 
 
 // Registrierung API
@@ -79,15 +102,35 @@ app.post('/register', async (req, res) => {
 
 // Add Termine API
 app.post('/add', async (req, res) => {
+    const authHeader = req.headers.authorization;
+
+    if (!authHeader) {
+        return res.status(401).send('Nicht eingeloggt');
+    }
+
     try {
-        const { titel, beschreibung, termin_datetime } = req.body;
-		
-        await axios.post('http://calendar-service:8080/api/calendar/add', { titel, beschreibung, termin_datetime });
-        res.status(200).send('Aktion erfolgreich');
-    } catch (error) {
-        res.status(400).send('Aktion fehlgeschlagen');
+        await axiosInstance.post(
+            'http://calendar-service:8080/api/calendar/add',
+            req.body,
+            {
+                headers: {
+                    Authorization: authHeader,
+                    'Content-Type': 'application/json'
+                }
+            }
+        );
+
+        res.status(200).send('Termin erfolgreich angelegt');
+    } catch (err) {
+        console.error('Calendar-Service Fehler:', err.response?.data || err.message);
+        res.status(err.response?.status || 500)
+           .send(err.response?.data || 'Fehler beim Anlegen des Termins');
     }
 });
+
+
+
+
 
 // Delete Termine API
 app.post('/delete', async (req, res) => {
@@ -97,10 +140,20 @@ app.post('/delete', async (req, res) => {
             return res.status(400).json({ error: "Ungültige Termin-ID!" });
         }
 
+        const authHeader = req.headers.authorization;
+        if (!authHeader) {
+            return res.status(401).send('Nicht eingeloggt');
+        }
+
         const response = await axios.post(
             'http://calendar-service:8080/api/calendar/delete',
             { termin_id },
-            { headers: { "Content-Type": "application/json" } }
+            {
+                headers: {
+                    Authorization: authHeader,
+                    'Content-Type': 'application/json'
+                }
+            }
         );
 
         if (response.status === 200) {

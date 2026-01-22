@@ -13,11 +13,12 @@ services:
     environment:
       - SPRING_PROFILES_ACTIVE=prod
       - SPRING_DEVTOOLS_RESTART_ENABLED=true
-      - SPRING_DATASOURCE_URL=jdbc:mysql://calendar-db:3306/calendar_db
+      - SPRING_DATASOURCE_URL=jdbc:mysql://calendar-db:3306/calendar_db?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
       - SPRING_DATASOURCE_USERNAME=user
       - SPRING_DATASOURCE_PASSWORD=rootpassword
     depends_on:
-      - calendar-db
+      calendar-db:
+        condition: service_healthy
     networks:
       - backend
 
@@ -83,6 +84,11 @@ services:
   ##### DATABASES #####
   calendar-db:
     image: mysql:8.0
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
     container_name: calendar-db
     environment:
       MYSQL_USER: user

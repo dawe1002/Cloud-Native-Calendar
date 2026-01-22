@@ -1,4 +1,4 @@
-_________________________________________________________________________________________________________________________________
+____________________________________________________________________________________________________________________________
 
 # Cloud-Native-Calendar
 
@@ -37,7 +37,7 @@ weitere optionale Features:
 Technologien:	
 	Java, Spring Boot (Backend), Docker, RabbitMQ (Open Source Message Broker), WebSockets(TCP-Protokoll), Git (Versionsverwaltung)
  
-_________________________________________________________________________________________________________________________________
+____________________________________________________________________________________________________________________________
 
 
 #Dokumentation
@@ -71,51 +71,56 @@ Datenbanken:
 
 Schritte zum lokalen Start:
 
-	Öffne ein Terminal im Hauptverzeichnis des Projekts 
+	Öffne ein Terminal im Hauptverzeichnis des Projekts (./Cloud-Native-Calendar)
 	(Ich benutze GitBash)
 
 	Erster Start(oder nach Änderungen in der docker-compose.yml):
 
-	mvn clean package
-	docker-compose up -d
+		mvn clean package
+		docker-compose up --build
 
 	Nachfolgende Starts:
 	
-	docker-compose start
+		docker-compose start
 
 	Server herunterfahren und Docker Containers, Volumes und Images zurücksetzen: 
 	
-	docker-compose down --volumes --rmi all
+		docker-compose down --volumes --rmi all
 
 	DAS PROJEKT UND ALLE MICROSERVICES WURDEN MIT DEN FOLGENDEN PORTS GEBAUT:
-	frontend				->	https://localhost:3000
-	calendar-service			->	https://calendar-service:8082
-	calendar_db				->	https://calendar_db:3306
-	user-management				->	https://user-management:8081
-	user_db					->	https://user_db_:3306
-	notifications(rabbitmq)			->	https://notifications:8083
-	adminer(debug/dev)			->	https://localhost:8084
+		frontend					->	https://localhost:3000
+		calendar-service			->	https://calendar-service:8082
+		calendar_db					->	https://calendar_db:3306
+		user-management				->	https://user-management:8081
+		user_db						->	https://user_db_:3306
+		notifications				->	https://notifications:8083
+		adminer(debug/dev)			->	https://localhost:8084
+		rabbitMQ(debug/dev)			->	http://localhost:15672
 
 	DIE BENUTZEROBERFLÄCHE LÄUFT AUF DEM PORT: 
-	https://localhost:3000
+		https://localhost:3000
 	Anmeldedaten-Frontend(Beispiel):
-	E-Mail: "weyerdavid@gmail.com" Passwort: "password"
+		E-Mail: "weyerdavid@gmail.com" Passwort: "password"
 
-	adminer zum testen der DB:
-	http://localhost:8084
+	adminer zum testen der DB: http://localhost:8084
 	
-	Anmeldedaten (user_db):
-		Server: user-db
-		Username user
-		Password: rootpassword
-		Database: user_db
-	
-	Anmeldedaten (calendar_db):
-		Server: calendar-db
-		Username user
-		Password: rootpassword
-		Database: calendar_db
+		Anmeldedaten (user_db):
+			Server: user-db
+			Username: user
+			Password: rootpassword
+			Database: user_db
+		
+		Anmeldedaten (calendar_db):
+			Server: calendar-db
+			Username: user
+			Password: rootpassword
+			Database: calendar_db
 
+	rabbitMQ zum testen der Message Queue(Message Broker):
+
+		Anmeldedaten (calendar_db):
+			Username: guest
+			Password: guest
 
 	VIEL SPAß!
 

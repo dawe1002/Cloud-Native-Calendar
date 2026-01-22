@@ -4,43 +4,50 @@ import java.time.LocalDateTime;
 
 public class AppointmentCreatedEvent {
 
-    private Long terminId;
-    private Long benutzerId;
+    private Integer termin_id;
+    private Integer benutzer_id;
     private String titel;
-    private LocalDateTime terminDatetime;
-    private Boolean is_notified;  
+    private String beschreibung;
+    private LocalDateTime termin_datetime;
+    private Boolean is_notified; 
 
     public AppointmentCreatedEvent() {
     }
 
     public AppointmentCreatedEvent(
-            Long terminId,
-            Long benutzerId,
+            Integer termin_id,
+            Integer benutzer_id,
             String titel,
-            LocalDateTime terminDatetime,
+            String beschreibung,
+            LocalDateTime termin_datetime,
             Boolean is_notified
     ) {
-        this.terminId = terminId;
-        this.benutzerId = benutzerId;
+        this.termin_id = termin_id;
+        this.benutzer_id = benutzer_id;
         this.titel = titel;
-        this.terminDatetime = terminDatetime;
+        this.beschreibung = beschreibung;
+        this.termin_datetime = termin_datetime;
         this.is_notified = is_notified;
     }
 
-    public Long getTerminId() {
-        return terminId;
+    public Integer getTermin_id() {
+        return termin_id;
     }
 
-    public Long getBenutzerId() {
-        return benutzerId;
+    public Integer getBenutzer_id() {
+        return benutzer_id;
     }
 
     public String getTitel() {
         return titel;
     }
 
-    public LocalDateTime getTerminDatetime() {
-        return terminDatetime;
+    public String getBeschreibung() {
+        return beschreibung;
+    }
+
+    public LocalDateTime getTermin_datetime() {
+        return termin_datetime;
     }
 
     public Boolean getIs_notified() {
