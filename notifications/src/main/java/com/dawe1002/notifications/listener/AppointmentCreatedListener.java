@@ -30,7 +30,8 @@ public class AppointmentCreatedListener {
             "Der calendar-service hat diesen Termin in der calendar-db gespeichert und dazu ein Termin-Event erstellt (->Producer/Publisher) /\n" +
             "Das Termin-Event wurde an die RabbitMQ-Message-Queue weitergeleitet (->Message Broker) /\n" +
             "Der notification-service hat das Termin-Event aus der Message-Queue konsumiert (->Consumer) /\n" +
-            "Der notification-service hat diese Popup-Nachricht an das Frontend weitergeleitet (->WebSocket)";
+            "Der notification-service hat diese Popup-Nachricht an das Frontend weitergeleitet (->WebSocket)\n\n" +
+            "Der Termin " + event.getTitel() + " wurde erfolgreich angelegt!";
 
         messagingTemplate.convertAndSend(
             "/topic/notifications",

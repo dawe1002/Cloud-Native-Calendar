@@ -20,43 +20,43 @@ public class User {
 
   
   // Getter & Setter
-  public Integer getId() {
+  public Integer getUser_id() {
       return benutzer_id;
   }
 
-  public void setId(Integer id) {
+  public void setUser_id(Integer id) {
       this.benutzer_id = id;
   }
 
-  public String getVorname() {
+  public String getUser_vorname() {
       return vorname;
   }
 
-  public void setVorname(String vorname) {
+  public void setUser_vorname(String vorname) {
       this.vorname = vorname;
   }
 
-  public String getNachname() {
+  public String getUser_nachname() {
       return nachname;
   }
 
-  public void setNachname(String nachname) {
+  public void setUser_nachname(String nachname) {
       this.nachname = nachname;
   }
 
-  public String getEmail() {
+  public String getUser_email() {
       return email;
   }
 
-  public void setEmail(String email) {
+  public void setUser_email(String email) {
       this.email = email;
   }
 
-  public String getPasswort() {
+  public String getUser_passwort() {
       return passwort;
   }
 
-  public void setPasswort(String passwort) {
+  public void setUser_passwort(String passwort) {
       this.passwort = passwort;
   }
 
