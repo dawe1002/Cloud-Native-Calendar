@@ -1,5 +1,20 @@
 
 let jwtToken = null;
+// WebSocket / RabbitMQ Notifications
+let stompClient = null;
+
+function connectWebSocket() {
+    const socket = new SockJS('http://localhost:8083/ws'); // notifications-service
+    stompClient = Stomp.over(socket);
+
+    stompClient.connect({}, function () {
+        console.log('✅ WebSocket verbunden (notifications)');
+
+        stompClient.subscribe('/topic/notifications', function (message) {
+            alert(message.body);
+        });
+    });
+}
 
 document.addEventListener('DOMContentLoaded', () => {
     
@@ -73,18 +88,29 @@ document.addEventListener('DOMContentLoaded', () => {
 	//showAllTermine Button
 	const showAllTerminBtn = document.getElementById('showAllTermin');
 	showAllTerminBtn.addEventListener('click', () => {
-		
-	    fetch('/all', {
-	        method: 'POST',
-	        headers: { 'Content-Type': 'application/json' },
-	        body: JSON.stringify({}),
-	    }).then(res => res.json())
-		  .then(data => displayTermine(data))
-		  .catch(error => {
-		  	console.error("Fehler beim Laden der Termine:", error);
-		        });
-	    loadCalendar();
+
+		if (!jwtToken) {
+			alert('Nicht eingeloggt!');
+			return;
+		}
+
+		fetch('/all', {
+			method: 'POST',
+			headers: { 
+				'Content-Type': 'application/json',
+				'Authorization': `Bearer ${jwtToken}`
+			},
+			body: JSON.stringify({}),
+		})
+		.then(res => res.json())
+		.then(data => displayTermine(data))
+		.catch(error => {
+			console.error("Fehler beim Laden der Termine:", error);
+		});
+
+		loadCalendar();
 	});
+
 	
 	//displayTermine Funktion        
 	function displayTermine(data) {
@@ -279,6 +305,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 			alert('Login erfolgreich!');
 			login();
+			connectWebSocket();
 
 		} catch (error) {
 			console.error('Fehler beim Login:', error);
@@ -315,6 +342,9 @@ document.addEventListener('DOMContentLoaded', () => {
 		localStorage.clear();
 		loadLoginView();
 		loadCalendar();
+		if (stompClient) {
+			stompClient.disconnect();
+		}
 	}
 
 

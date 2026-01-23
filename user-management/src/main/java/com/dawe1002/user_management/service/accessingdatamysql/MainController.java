@@ -70,34 +70,30 @@ public class MainController {
   }
 
 
-
-  // TODO use @RequestBody to read POST data from body instead of URL params
   @PostMapping(path = "/register")
   public ResponseEntity<String> registerUser(@RequestBody Map<String, Object> body) {
 	  String vorname = body.get("vorname").toString();
 	  String nachname = body.get("nachname").toString();
 	  String email = body.get("email").toString();
 	  String password = body.get("password").toString();
-    // @RequestParam means it is a parameter from the GET or POST request
 
     User n = new User();
     n.setVorname(vorname);
     n.setNachname(nachname);
     n.setEmail(email);
     n.setPasswort(password);
+    
     try {
     	userRepository.save(n);
     	return ResponseEntity.ok("Registrierung erfolgreich!");
     } catch (DataIntegrityViolationException e) {
-    	return ResponseEntity.status(HttpStatus.CONFLICT).body("Email-Adresse bereits vergeben");
-    			//ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Registrierung fehlgeschlagen!");        
+    	return ResponseEntity.status(HttpStatus.CONFLICT).body("Email-Adresse bereits vergeben");       
     }
 }
 
 
   @GetMapping(path="/all")
   public @ResponseBody Iterable<User> getAllUsers() {
-    // This returns a JSON or XML with the users
     return userRepository.findAll();
   }
 }
