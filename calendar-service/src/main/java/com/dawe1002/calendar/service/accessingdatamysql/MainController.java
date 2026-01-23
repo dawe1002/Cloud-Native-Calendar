@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 
-import com.dawe1002.calendar.service.event.AppointmentCreatedEvent;
+import com.dawe1002.events.AppointmentCreatedEvent;
 import com.dawe1002.calendar.service.messaging.AppointmentEventPublisher;
 import com.dawe1002.calendar.service.security.JwtUtil;
 
@@ -69,22 +69,21 @@ public class MainController {
         n.setTermin_datetime(termin_datetime);
         n.setIs_notified(false);
 
-        try {
-            // Speichern
-            Termin savedTermin = terminRepository.save(n);
+try {
+    // Speichern
+    Termin savedTermin = terminRepository.save(n);
 
-            // Event erzeugen
-            AppointmentCreatedEvent event =
-                    new AppointmentCreatedEvent(
-                            savedTermin.getTermin_id(),
-                            savedTermin.getBenutzer_id(),
-                            savedTermin.getTitel(),
-                            savedTermin.getBeschreibung(),
-                            savedTermin.getTermin_datetime(),
-                            savedTermin.getIs_notified()
-                    );
-
-            appointmentEventPublisher.publishAppointmentCreated(event);
+    // Event erzeugen
+    appointmentEventPublisher.publish(
+        new AppointmentCreatedEvent(
+            savedTermin.getTermin_id(),
+            savedTermin.getBenutzer_id(),
+            savedTermin.getTitel(),
+            savedTermin.getBeschreibung(),
+            savedTermin.getTermin_datetime(),
+            savedTermin.getIs_notified()
+        )
+    );
 
             return ResponseEntity.ok("Termin erfolgreich angelegt!");
 

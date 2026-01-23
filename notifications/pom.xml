@@ -6,7 +6,9 @@
 		<groupId>com.cloudnativecalendar</groupId>
 		<artifactId>Cloud-Native-Calendar</artifactId>
 		<version>1.0-SNAPSHOT</version>
+		<relativePath>../pom.xml</relativePath>
 	</parent>
+
 	<groupId>com.dawe1002.notifications</groupId>
 	<artifactId>notifications</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
@@ -30,8 +32,9 @@
 	</properties>
 	<dependencies>
 		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-amqp</artifactId>
+			<groupId>com.cloudnativecalendar</groupId>
+			<artifactId>calendar-events</artifactId>
+			<version>1.0-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
@@ -42,14 +45,14 @@
 			<artifactId>spring-boot-starter-websocket</artifactId>
 		</dependency>
 		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-amqp</artifactId>
+		</dependency>
+		<dependency>
 			<groupId>org.springframework.amqp</groupId>
 			<artifactId>spring-rabbit-test</artifactId>
 			<scope>test</scope>
 		</dependency>	
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-amqp</artifactId>
-		</dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-devtools</artifactId>
@@ -79,7 +82,6 @@
             	<configuration>
                 	<archive>
                     	<manifest>
-                        	<mainClass>com.dawe1002.notifications.service.NotificationsApplication</mainClass>
                     	</manifest>
                 	</archive>
             	</configuration>

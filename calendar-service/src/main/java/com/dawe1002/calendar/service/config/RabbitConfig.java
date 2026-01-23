@@ -1,7 +1,7 @@
 package com.dawe1002.calendar.service.config;
 
-import org.springframework.amqp.core.*;
-import org.springframework.amqp.support.converter.MessageConverter;
+import com.dawe1002.events.RabbitConstants;
+import org.springframework.amqp.core.DirectExchange;
 import org.springframework.amqp.support.converter.Jackson2JsonMessageConverter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -9,32 +9,17 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class RabbitConfig {
 
-    public static final String EXCHANGE_NAME = "calendar.exchange";
-    public static final String ROUTING_KEY_APPOINTMENT_CREATED = "appointment.created";
-    public static final String QUEUE_NAME = "notifications.queue";
-    public static final String ROUTING_KEY = "appointment.*";
-    
-
     @Bean
-    public TopicExchange calendarExchange() {
-        return new TopicExchange(EXCHANGE_NAME);
+    public DirectExchange appointmentExchange() {
+        return new DirectExchange(
+                RabbitConstants.EXCHANGE_APPOINTMENTS,
+                true,
+                false
+        );
     }
 
     @Bean
-    public Queue notificationsQueue() {
-        return new Queue(QUEUE_NAME, true);
+    public Jackson2JsonMessageConverter messageConverter() {
+        return new Jackson2JsonMessageConverter();
     }
-
-    @Bean
-    public Binding binding(Queue notificationsQueue, TopicExchange calendarExchange) {
-        return BindingBuilder
-                .bind(notificationsQueue)
-                .to(calendarExchange)
-                .with(ROUTING_KEY);
-    }
-
-        @Bean
-        public MessageConverter jacksonMessageConverter() {
-            return new Jackson2JsonMessageConverter();
-        }
 }

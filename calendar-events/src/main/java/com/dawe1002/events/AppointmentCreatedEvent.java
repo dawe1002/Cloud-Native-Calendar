@@ -1,8 +1,9 @@
-package com.dawe1002.calendar.service.event;
+package com.dawe1002.events;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 
-public class AppointmentCreatedEvent {
+public class AppointmentCreatedEvent implements Serializable {
 
     private Integer termin_id;
     private Integer benutzer_id;
